@@ -6,12 +6,18 @@ using UnityEngine.InputSystem;
 
 namespace SunkCost.HH.Modules.InputSystem
 {
-    public class InputManager : MonoSingleton<InputManager>, Controls.ICameraActions
+    public class InputManager : MonoSingleton<InputManager>, Controls.ICameraActions, Controls.IOfficeActions
     {
         [HideInInspector] public UnityEvent<Vector2> onMoveInput = new();
         [HideInInspector] public UnityEvent<bool> onRotateClockwiseInput = new();
         [HideInInspector] public UnityEvent<bool> onRotateCounterClockwiseInput = new();
         [HideInInspector] public UnityEvent<float> onZoomInput = new();
+        [HideInInspector] public UnityEvent onMouseDown = new();
+        [HideInInspector] public UnityEvent onMouseUp = new();
+        [HideInInspector] public UnityEvent onMouseDelta = new();
+        [HideInInspector] public bool mouseDragging = false;
+
+        public Vector2 MousePosition => _controls.Office.MousePosition.ReadValue<Vector2>();
         
         private Controls _controls;
 
@@ -27,11 +33,15 @@ namespace SunkCost.HH.Modules.InputSystem
             _controls = new Controls();
             _controls.Camera.SetCallbacks(this);
             _controls.Camera.Enable();
+            
+            _controls.Office.SetCallbacks(this);
+            _controls.Office.Enable();
         }
 
         private void OnDisable()
         {
             _controls.Camera.Disable();
+            _controls.Office.Disable();
         }
         
         #endregion
@@ -77,7 +87,34 @@ namespace SunkCost.HH.Modules.InputSystem
                 onZoomInput.Invoke(context.ReadValue<float>());
             }
         }
+        
+        public void OnMousePosition(InputAction.CallbackContext context)
+        {
+            
+        }
 
         #endregion
+
+        public void OnMouseClick(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                onMouseDown.Invoke();
+                mouseDragging = true;
+            }
+            else if (context.canceled)
+            {
+                onMouseUp.Invoke();
+                mouseDragging = false;
+            }
+        }
+
+        public void OnMouseDelta(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                onMouseDelta.Invoke();
+            }
+        }
     }
 }

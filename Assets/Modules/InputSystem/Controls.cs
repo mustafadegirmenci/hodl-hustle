@@ -178,6 +178,74 @@ namespace Modules.InputSystem
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Office"",
+            ""id"": ""f1e8fbcc-0338-45bc-b918-204b1a8fb804"",
+            ""actions"": [
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""07968a67-01e8-4cce-9a2c-cf91b23572b1"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""6890f44c-6f74-4dc4-b7e2-777cac82176d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseDelta"",
+                    ""type"": ""Value"",
+                    ""id"": ""70349f16-244b-483f-9686-670f0d6e3820"",
+                    ""expectedControlType"": ""Delta"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""acc5ee8e-019f-42ab-9508-094dc7fec9a6"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2bee7157-6625-4142-85b6-3be22bbc981e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""MouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""789ce8f9-22a3-478c-823b-47e5884566c0"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""MouseDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -205,6 +273,11 @@ namespace Modules.InputSystem
             m_Camera_RotateClockwise = m_Camera.FindAction("RotateClockwise", throwIfNotFound: true);
             m_Camera_RotateCounterClockwise = m_Camera.FindAction("RotateCounterClockwise", throwIfNotFound: true);
             m_Camera_Zoom = m_Camera.FindAction("Zoom", throwIfNotFound: true);
+            // Office
+            m_Office = asset.FindActionMap("Office", throwIfNotFound: true);
+            m_Office_MousePosition = m_Office.FindAction("MousePosition", throwIfNotFound: true);
+            m_Office_MouseClick = m_Office.FindAction("MouseClick", throwIfNotFound: true);
+            m_Office_MouseDelta = m_Office.FindAction("MouseDelta", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -332,6 +405,68 @@ namespace Modules.InputSystem
             }
         }
         public CameraActions @Camera => new CameraActions(this);
+
+        // Office
+        private readonly InputActionMap m_Office;
+        private List<IOfficeActions> m_OfficeActionsCallbackInterfaces = new List<IOfficeActions>();
+        private readonly InputAction m_Office_MousePosition;
+        private readonly InputAction m_Office_MouseClick;
+        private readonly InputAction m_Office_MouseDelta;
+        public struct OfficeActions
+        {
+            private @Controls m_Wrapper;
+            public OfficeActions(@Controls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @MousePosition => m_Wrapper.m_Office_MousePosition;
+            public InputAction @MouseClick => m_Wrapper.m_Office_MouseClick;
+            public InputAction @MouseDelta => m_Wrapper.m_Office_MouseDelta;
+            public InputActionMap Get() { return m_Wrapper.m_Office; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(OfficeActions set) { return set.Get(); }
+            public void AddCallbacks(IOfficeActions instance)
+            {
+                if (instance == null || m_Wrapper.m_OfficeActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_OfficeActionsCallbackInterfaces.Add(instance);
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
+                @MouseClick.started += instance.OnMouseClick;
+                @MouseClick.performed += instance.OnMouseClick;
+                @MouseClick.canceled += instance.OnMouseClick;
+                @MouseDelta.started += instance.OnMouseDelta;
+                @MouseDelta.performed += instance.OnMouseDelta;
+                @MouseDelta.canceled += instance.OnMouseDelta;
+            }
+
+            private void UnregisterCallbacks(IOfficeActions instance)
+            {
+                @MousePosition.started -= instance.OnMousePosition;
+                @MousePosition.performed -= instance.OnMousePosition;
+                @MousePosition.canceled -= instance.OnMousePosition;
+                @MouseClick.started -= instance.OnMouseClick;
+                @MouseClick.performed -= instance.OnMouseClick;
+                @MouseClick.canceled -= instance.OnMouseClick;
+                @MouseDelta.started -= instance.OnMouseDelta;
+                @MouseDelta.performed -= instance.OnMouseDelta;
+                @MouseDelta.canceled -= instance.OnMouseDelta;
+            }
+
+            public void RemoveCallbacks(IOfficeActions instance)
+            {
+                if (m_Wrapper.m_OfficeActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IOfficeActions instance)
+            {
+                foreach (var item in m_Wrapper.m_OfficeActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_OfficeActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public OfficeActions @Office => new OfficeActions(this);
         private int m_DesktopSchemeIndex = -1;
         public InputControlScheme DesktopScheme
         {
@@ -347,6 +482,12 @@ namespace Modules.InputSystem
             void OnRotateClockwise(InputAction.CallbackContext context);
             void OnRotateCounterClockwise(InputAction.CallbackContext context);
             void OnZoom(InputAction.CallbackContext context);
+        }
+        public interface IOfficeActions
+        {
+            void OnMousePosition(InputAction.CallbackContext context);
+            void OnMouseClick(InputAction.CallbackContext context);
+            void OnMouseDelta(InputAction.CallbackContext context);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace SunkCost.HH.Modules.CameraSystem
         private Vector2 _moveInput;
         private bool _rotateClockwiseInput;
         private bool _rotateCounterClockwiseInput;
-        private Tween _zoomTween;
         
         private CinemachineTransposer _transposer;
 
@@ -38,7 +37,7 @@ namespace SunkCost.HH.Modules.CameraSystem
                     Mathf.Clamp(_transposer.m_FollowOffset.z + zoomAmount * zoomSpeed, -12, -3)
                 );
                 
-                _zoomTween = DOTween.To(() => _transposer.m_FollowOffset, x => _transposer.m_FollowOffset = x, targetOffset, 0.5f);
+                DOTween.To(() => _transposer.m_FollowOffset, x => _transposer.m_FollowOffset = x, targetOffset, 0.5f);
             });
         }
 
@@ -67,7 +66,7 @@ namespace SunkCost.HH.Modules.CameraSystem
             {
                 var targetRotation = Quaternion.Euler(
                     rotationEuler.x,
-                    rotationEuler.y + rotationSpeed * Time.deltaTime,
+                    rotationEuler.y + rotationSpeed,
                     rotationEuler.z
                 );
                 cameraTarget.rotation = Quaternion.Slerp(rotation, targetRotation, Time.deltaTime);
