@@ -50,6 +50,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
                     _renderers.ForEach(r => r.material.color = Color.red);
                 }
             });
+            
+            gameObject.SetActive(false);
         }
     }
 }

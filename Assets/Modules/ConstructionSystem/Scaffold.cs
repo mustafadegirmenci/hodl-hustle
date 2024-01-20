@@ -17,15 +17,15 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             
             if (state is ScaffoldState.Persistent)
             {
-                material.color = Color.black;
+                material.color = new Color(0, 0, 0, 0.2f);
             }
             else if (state is ScaffoldState.SelectionToAdd)
             {
-                material.color = Color.green;
+                material.color = new Color(0, 200, 0, 0.2f);
             }
             else if (state is ScaffoldState.SelectionToRemove)
             {
-                material.color = Color.red;
+                material.color = new Color(200, 0, 0, 0.2f);
             }
         }
     }

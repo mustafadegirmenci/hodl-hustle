@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SunkCost.HH.Modules.GridSystem;
 using UnityEngine;
@@ -22,6 +21,7 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             constructionManager.onPersistentSelectionChanged.AddListener(UpdatePersistentScaffolds);
             constructionManager.onVolatileSelectionChanged.AddListener(UpdateVolatileScaffolds);
             constructionManager.onStateChanged.AddListener(state => _state = state);
+            constructionManager.onConstructionEnded.AddListener(_ => ClearScaffolds());
         }
 
         private void UpdateVolatileScaffolds(List<GridTile> tiles)
@@ -84,6 +84,22 @@ namespace SunkCost.HH.Modules.ConstructionSystem
                 newScaffold.SetState(ScaffoldState.Persistent);
                 _persistentScaffolds.Add(added, newScaffold);
             }
+        }
+
+        private void ClearScaffolds()
+        {
+            foreach (var (key, value) in _persistentScaffolds)
+            {
+                Destroy(value.gameObject);
+            }
+            
+            foreach (var (key, value) in _volatileScaffolds)
+            {
+                Destroy(value.gameObject);
+            }
+            
+            _persistentScaffolds.Clear();
+            _volatileScaffolds.Clear();
         }
     }
 }

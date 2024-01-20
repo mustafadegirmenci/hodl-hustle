@@ -14,9 +14,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
         [HideInInspector] public UnityEvent<ConstructionState> onStateChanged = new();
         [HideInInspector] public UnityEvent<List<GridTile>> onVolatileSelectionChanged = new();
         [HideInInspector] public UnityEvent<List<GridTile>> onPersistentSelectionChanged = new();
+        [HideInInspector] public UnityEvent<List<GridTile>> onConstructionEnded = new();
 
-        [SerializeField] private Button startConstructionButton;
-        [SerializeField] private Button endConstructionButton;
         [SerializeField] private Button addTilesButton;
         [SerializeField] private Button removeTilesButton;
         
@@ -48,12 +47,36 @@ namespace SunkCost.HH.Modules.ConstructionSystem
 
         private void Start()
         {
-            startConstructionButton.onClick.AddListener(StartConstruction);
-            endConstructionButton.onClick.AddListener(EndConstruction);
             addTilesButton.onClick.AddListener(SwitchToAddTilesMode);
             removeTilesButton.onClick.AddListener(SwitchToRemoveTilesMode);
 
             CurrentState = ConstructionState.Passive;
+        }
+
+        public void StartConstruction()
+        {
+            if (CurrentState is not ConstructionState.Passive)
+            {
+                return;
+            }
+            
+            CurrentState = ConstructionState.WaitingToSelectTilesToBeAdded;
+            gridManager.onIndicatorCoordsChanged.AddListener(HandleIndicatorCoordsChanged);
+            gridManager.onGridTileClicked.AddListener(HandleGridTileClicked);
+            inputManager.onMouseUp.AddListener(HandleMouseUp);
+        }
+
+        public void EndConstruction()
+        {
+            if (CurrentState is ConstructionState.Passive)
+            {
+                return;
+            }
+            
+            CurrentState = ConstructionState.Passive;
+            gridManager.onIndicatorCoordsChanged.RemoveListener(HandleIndicatorCoordsChanged);
+            onConstructionEnded.Invoke(_persistentSelection);
+            _persistentSelection.Clear();
         }
 
         private void SwitchToAddTilesMode()
@@ -70,30 +93,6 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             {
                 CurrentState = ConstructionState.WaitingToSelectTilesToBeRemoved;
             }
-        }
-
-        private void StartConstruction()
-        {
-            if (CurrentState is not ConstructionState.Passive)
-            {
-                return;
-            }
-            
-            CurrentState = ConstructionState.WaitingToSelectTilesToBeAdded;
-            gridManager.onIndicatorCoordsChanged.AddListener(HandleIndicatorCoordsChanged);
-            gridManager.onGridTileClicked.AddListener(HandleGridTileClicked);
-            inputManager.onMouseUp.AddListener(HandleMouseUp);
-        }
-
-        private void EndConstruction()
-        {
-            if (CurrentState is ConstructionState.Passive)
-            {
-                return;
-            }
-            
-            CurrentState = ConstructionState.Passive;
-            gridManager.onIndicatorCoordsChanged.RemoveListener(HandleIndicatorCoordsChanged);
         }
 
         private void HandleIndicatorCoordsChanged(GridCoordinate indicatorCoords)

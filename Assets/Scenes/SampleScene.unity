@@ -3020,7 +3020,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 1
+  m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -6059,6 +6059,57 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd95f75bb54f495aae5471287577464c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &653585943
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653585945}
+  - component: {fileID: 653585944}
+  m_Layer: 0
+  m_Name: RoomManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653585944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653585943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 537decab804245a3b17191528918a775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomPrefab: {fileID: 7053252312459481352, guid: 67ea7e9969349894fa69f3ecdb8ed6f0,
+    type: 3}
+  roomsContainer: {fileID: 950865187}
+  constructionManager: {fileID: 2117199267}
+  startRoomCreationButton: {fileID: 1735671895}
+  finishRoomCreationButton: {fileID: 663823258}
+--- !u!4 &653585945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653585943}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 950865187}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &659481350
 GameObject:
   m_ObjectHideFlags: 0
@@ -8230,6 +8281,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd95f75bb54f495aae5471287577464c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &950865186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 950865187}
+  m_Layer: 0
+  m_Name: Rooms
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &950865187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950865186}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 653585945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &976492950
 GameObject:
   m_ObjectHideFlags: 0
@@ -8786,7 +8868,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Construction
+  m_text: Create Room
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9368,7 +9450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1149231778}
   m_Layer: 0
-  m_Name: ScaffoldsContainer
+  m_Name: Scaffolds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11639,7 +11721,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: End Construction
+  m_text: Done
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -17636,8 +17718,9 @@ MonoBehaviour:
   onPersistentSelectionChanged:
     m_PersistentCalls:
       m_Calls: []
-  startConstructionButton: {fileID: 1735671895}
-  endConstructionButton: {fileID: 663823258}
+  onConstructionEnded:
+    m_PersistentCalls:
+      m_Calls: []
   addTilesButton: {fileID: 559037147}
   removeTilesButton: {fileID: 1173311215}
   gridManager: {fileID: 912619026}
@@ -17672,3 +17755,4 @@ SceneRoots:
   - {fileID: 15457636}
   - {fileID: 912619027}
   - {fileID: 2117199268}
+  - {fileID: 653585945}
