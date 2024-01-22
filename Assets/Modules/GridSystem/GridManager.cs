@@ -19,11 +19,11 @@ namespace SunkCost.HH.Modules.GridSystem
 
         public GridCoordinate IndicatorGridCoord { get; private set; }
 
-        private readonly Dictionary<GridCoordinate, GridTile> _tiles = new();
+        public readonly Dictionary<GridCoordinate, GridTile> Tiles = new();
 
         public void AddTile(GridCoordinate coordinate, GridTile tile)
         {
-            _tiles.Add(coordinate, tile);
+            Tiles.Add(coordinate, tile);
             tile.Coordinates = coordinate;
             inputManager.onMouseDown.AddListener(CheckGridTileClick);
         }
@@ -53,7 +53,7 @@ namespace SunkCost.HH.Modules.GridSystem
                 for (var z = minZ; z <= maxZ; z++)
                 {
                     var coord = new GridCoordinate(x, z);
-                    if (_tiles.TryGetValue(coord, out var tile))
+                    if (Tiles.TryGetValue(coord, out var tile))
                     {
                         coords.Add(tile);
                     }

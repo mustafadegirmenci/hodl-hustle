@@ -33,8 +33,8 @@ namespace SunkCost.HH.Modules.CameraSystem
             {
                 var targetOffset = new Vector3(
                     _transposer.m_FollowOffset.x,
-                    Mathf.Clamp(_transposer.m_FollowOffset.y - zoomAmount * zoomSpeed, 3, 12),
-                    Mathf.Clamp(_transposer.m_FollowOffset.z + zoomAmount * zoomSpeed, -12, -3)
+                    Mathf.Clamp(_transposer.m_FollowOffset.y - zoomAmount * zoomSpeed, 5, 20),
+                    Mathf.Clamp(_transposer.m_FollowOffset.z + zoomAmount * zoomSpeed, -20, -5)
                 );
                 
                 DOTween.To(() => _transposer.m_FollowOffset, x => _transposer.m_FollowOffset = x, targetOffset, 0.5f);
