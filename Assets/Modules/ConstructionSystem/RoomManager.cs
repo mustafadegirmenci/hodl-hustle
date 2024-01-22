@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SunkCost.HH.Modules.GridSystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,37 +10,26 @@ namespace SunkCost.HH.Modules.ConstructionSystem
     {
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform roomsContainer;
-        
-        [SerializeField] private ConstructionManager constructionManager;
 
         [SerializeField] private Button startRoomCreationButton;
-        [SerializeField] private Button finishRoomCreationButton;
 
         private readonly List<Room> _rooms = new();
+        private static int _roomCount = 0;
 
         private void Start()
         {
-            startRoomCreationButton.onClick.AddListener(() =>
-            {
-                constructionManager.StartConstruction();
-                constructionManager.onConstructionEnded.AddListener(AddRoom);
-            });
-            
-            finishRoomCreationButton.onClick.AddListener(() =>
-            {
-                constructionManager.EndConstruction();
-            });
+            startRoomCreationButton.onClick.AddListener(CreateRoom);
         }
 
-        public void AddRoom(List<GridTile> tiles)
+        private void CreateRoom()
         {
             var newRoom = Instantiate(
                 original: roomPrefab,
                 parent: roomsContainer
             );
-            newRoom.SetTiles(tiles);
+            newRoom.StartEditing();
+            newRoom.gameObject.name = (_roomCount++).ToString();
             _rooms.Add(newRoom);
-            Debug.Log($"Added a new room with size: {tiles.Count}");
         }
     }
 }

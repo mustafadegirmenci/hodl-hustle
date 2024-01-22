@@ -2,14 +2,17 @@
 using System.Linq;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.InputSystem;
+using SunkCost.HH.Modules.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace SunkCost.HH.Modules.ConstructionSystem
 {
-    public class ConstructionManager : MonoBehaviour
+    public class ConstructionManager : MonoSingleton<ConstructionManager>
     {
+        public Button finishConstructionButton;
+        
         [HideInInspector] public UnityEvent<Vector3> onIndicatorPositionChanged = new();
         [HideInInspector] public UnityEvent<ConstructionState> onStateChanged = new();
         [HideInInspector] public UnityEvent<List<GridTile>> onVolatileSelectionChanged = new();
@@ -51,32 +54,48 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             removeTilesButton.onClick.AddListener(SwitchToRemoveTilesMode);
 
             CurrentState = ConstructionState.Passive;
+            
+            finishConstructionButton.gameObject.SetActive(false);
         }
 
-        public void StartConstruction()
+        public bool StartConstruction(List<GridTile> initialTiles)
         {
             if (CurrentState is not ConstructionState.Passive)
             {
-                return;
+                return false;
             }
+            Debug.Log($"Construction started with {initialTiles.Count} tiles.");
+            
+            finishConstructionButton.gameObject.SetActive(true);
             
             CurrentState = ConstructionState.WaitingToSelectTilesToBeAdded;
+            
             gridManager.onIndicatorCoordsChanged.AddListener(HandleIndicatorCoordsChanged);
             gridManager.onGridTileClicked.AddListener(HandleGridTileClicked);
             inputManager.onMouseUp.AddListener(HandleMouseUp);
+
+            UpdateVolatileSelection(initialTiles);
+            AddVolatileSelectionToPersistent();
+
+            return true;
         }
 
-        public void EndConstruction()
+        public bool EndConstruction()
         {
             if (CurrentState is ConstructionState.Passive)
             {
-                return;
+                return false;
             }
+            Debug.Log($"Construction ended with {_persistentSelection.Count} tiles.");
+            
+            finishConstructionButton.gameObject.SetActive(false);
             
             CurrentState = ConstructionState.Passive;
             gridManager.onIndicatorCoordsChanged.RemoveListener(HandleIndicatorCoordsChanged);
             onConstructionEnded.Invoke(_persistentSelection);
             _persistentSelection.Clear();
+            
+            return true;
         }
 
         private void SwitchToAddTilesMode()
