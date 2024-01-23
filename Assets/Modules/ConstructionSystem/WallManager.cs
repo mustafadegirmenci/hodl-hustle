@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SunkCost.HH.Modules.ConstructionSystem.Walls;
 using SunkCost.HH.Modules.GridSystem;
 using UnityEngine;
 
@@ -11,43 +10,12 @@ namespace SunkCost.HH.Modules.ConstructionSystem
         [SerializeField] private Grid wallGrid;
         [SerializeField] private RoomManager roomManager;
         [SerializeField] private GridManager gridManager;
-
-        [SerializeField] private GameObject tester;
-        [SerializeField] private GameObject farLeftPrefab;
-        [SerializeField] private GameObject farLeftRightPrefab;
-        [SerializeField] private GameObject farNearPrefab;
-        [SerializeField] private GameObject farNearLeftPrefab;
-        [SerializeField] private GameObject farNearRightPrefab;
-        [SerializeField] private GameObject farRightPrefab;
-        [SerializeField] private GameObject leftRightPrefab;
-        [SerializeField] private GameObject nearLeftPrefab;
-        [SerializeField] private GameObject nearLeftRightPrefab;
-        [SerializeField] private GameObject nearRightPrefab;
         
-        private readonly Dictionary<WallCode, GameObject> _wallPrefabs = new();
         private readonly List<GameObject> _walls = new();
 
         private void Start()
         {
             roomManager.onRoomsChanged.AddListener(UpdateWalls);
-            
-            _wallPrefabs[WallCode.NearLeft] = nearLeftPrefab;
-            _wallPrefabs[WallCode.FarRight | WallCode.NearRight | WallCode.FarLeft] = nearLeftPrefab;
-            
-            _wallPrefabs[WallCode.NearRight] = nearRightPrefab;
-            _wallPrefabs[WallCode.NearLeft | WallCode.FarLeft | WallCode.FarRight] = nearRightPrefab;
-            
-            _wallPrefabs[WallCode.FarLeft] = farLeftPrefab;
-            _wallPrefabs[WallCode.NearLeft | WallCode.NearRight | WallCode.FarRight] = farLeftPrefab;
-            
-            _wallPrefabs[WallCode.FarRight] = farRightPrefab;
-            _wallPrefabs[WallCode.NearLeft | WallCode.NearRight | WallCode.FarLeft] = farRightPrefab;
-            
-            _wallPrefabs[WallCode.NearLeft | WallCode.NearRight] = leftRightPrefab;
-            _wallPrefabs[WallCode.FarLeft | WallCode.FarRight] = leftRightPrefab;
-            
-            _wallPrefabs[WallCode.NearLeft | WallCode.FarLeft] = farNearPrefab;
-            _wallPrefabs[WallCode.NearRight | WallCode.FarRight] = farNearPrefab;
         }
 
         private void UpdateWalls(List<Room> rooms)
@@ -124,18 +92,18 @@ namespace SunkCost.HH.Modules.ConstructionSystem
                                 }
                             }
                     
-                            SpawnSingleWall(wallCode, x, z);
+                            SpawnSingleWall(room, wallCode, x, z);
                         }
                     }
                 }
             }
         }
 
-        private void SpawnSingleWall(WallCode code, int x, int z)
+        private void SpawnSingleWall(Room room, WallCode code, int x, int z)
         {
             var worldPos = wallGrid.CellToWorld(new Vector3Int(x, 0, z));
-
-            if (_wallPrefabs.TryGetValue(code, out var prefab))
+            
+            if (room.WallPrefabs.TryGetValue(code, out var prefab))
             {
                 _walls.Add(Instantiate(prefab, worldPos, Quaternion.identity));
             }

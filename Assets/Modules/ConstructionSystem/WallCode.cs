@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SunkCost.HH.Modules.ConstructionSystem.Walls
+namespace SunkCost.HH.Modules.ConstructionSystem
 {
     [Flags]
     public enum WallCode

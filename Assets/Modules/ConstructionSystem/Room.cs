@@ -15,12 +15,29 @@ namespace SunkCost.HH.Modules.ConstructionSystem
         [SerializeField] private Transform roomTilesContainer;
         [SerializeField] private Button startEditingRoomButton;
         [SerializeField] private Canvas roomCanvas;
+        
+        [SerializeField] private GameObject farLeftInnerPrefab;
+        [SerializeField] private GameObject farLeftOuterPrefab;
+        [SerializeField] private GameObject farNearLeftBiasedPrefab;
+        [SerializeField] private GameObject farNearRightBiasedPrefab;
+        [SerializeField] private GameObject farRightInnerPrefab;
+        [SerializeField] private GameObject farRightOuterPrefab;
+        [SerializeField] private GameObject leftRightFarBiasedPrefab;
+        [SerializeField] private GameObject leftRightNearBiasedPrefab;
+        [SerializeField] private GameObject nearLeftInnerPrefab;
+        [SerializeField] private GameObject nearLeftOuterPrefab;
+        [SerializeField] private GameObject nearRightInnerPrefab;
+        [SerializeField] private GameObject nearRightOuterPrefab;
+        
+        public readonly Dictionary<WallCode, GameObject> WallPrefabs = new();
 
         public readonly Dictionary<GridTile, RoomTile> Tiles = new();
 
         private void Start()
         {
             startEditingRoomButton.onClick.AddListener(StartEditing);
+
+            InitializeWallPrefabs();
         }
 
         public void StartEditing()
@@ -116,5 +133,25 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             }
         }
 
+        private void InitializeWallPrefabs()
+        {
+            WallPrefabs[WallCode.NearLeft] = nearLeftInnerPrefab;
+            WallPrefabs[WallCode.FarRight | WallCode.NearRight | WallCode.FarLeft] = nearLeftOuterPrefab;
+            
+            WallPrefabs[WallCode.NearRight] = nearRightInnerPrefab;
+            WallPrefabs[WallCode.NearLeft | WallCode.FarLeft | WallCode.FarRight] = nearRightOuterPrefab;
+            
+            WallPrefabs[WallCode.FarLeft] = farLeftInnerPrefab;
+            WallPrefabs[WallCode.NearLeft | WallCode.NearRight | WallCode.FarRight] = farLeftOuterPrefab;
+            
+            WallPrefabs[WallCode.FarRight] = farRightInnerPrefab;
+            WallPrefabs[WallCode.NearLeft | WallCode.NearRight | WallCode.FarLeft] = farRightOuterPrefab;
+            
+            WallPrefabs[WallCode.NearLeft | WallCode.NearRight] = leftRightNearBiasedPrefab;
+            WallPrefabs[WallCode.FarLeft | WallCode.FarRight] = leftRightFarBiasedPrefab;
+            
+            WallPrefabs[WallCode.NearLeft | WallCode.FarLeft] = farNearLeftBiasedPrefab;
+            WallPrefabs[WallCode.NearRight | WallCode.FarRight] = farNearRightBiasedPrefab;
+        }
     }
 }

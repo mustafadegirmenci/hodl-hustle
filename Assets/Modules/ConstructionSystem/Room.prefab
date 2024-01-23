@@ -436,8 +436,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccc076f187434344b9293fecd2278c94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onRoomChanged:
+    m_PersistentCalls:
+      m_Calls: []
   roomTilePrefab: {fileID: 4677503433882711758, guid: 73ab0a52e6188e041879ee1efabe02c8,
     type: 3}
   roomTilesContainer: {fileID: 5360696266973711695}
   startEditingRoomButton: {fileID: 8711012220415674862}
   roomCanvas: {fileID: 6686917651206706340}
+  farLeftInnerPrefab: {fileID: 2427957127504817746, guid: 5f00084b4082e0842b55e4942ec75ab5,
+    type: 3}
+  farLeftOuterPrefab: {fileID: 2427957127504817746, guid: 357d1b468dfc1214090f3a841e6fc0a0,
+    type: 3}
+  farNearLeftBiasedPrefab: {fileID: 5677029047612727033, guid: 486ffa8b58d2210439e800aa47d3abeb,
+    type: 3}
+  farNearRightBiasedPrefab: {fileID: 5677029047612727033, guid: d5be92afa5011404aa4558d227b06b5e,
+    type: 3}
+  farRightInnerPrefab: {fileID: 4233716683290990773, guid: b9f7b5639399b2543bb81201f9a354e4,
+    type: 3}
+  farRightOuterPrefab: {fileID: 4233716683290990773, guid: 2321fd896a7be73488ec15574c9d51d1,
+    type: 3}
+  leftRightFarBiasedPrefab: {fileID: 7500382797525074088, guid: 57930d0c56af1334aa1d1d1f04574f29,
+    type: 3}
+  leftRightNearBiasedPrefab: {fileID: 7500382797525074088, guid: 224de034e711f804ca4207dee501b92e,
+    type: 3}
+  nearLeftInnerPrefab: {fileID: 1545744888300795712, guid: c36790bb98560c448a1ba6251806ffb8,
+    type: 3}
+  nearLeftOuterPrefab: {fileID: 1545744888300795712, guid: 299eff80d14a78347a568cf639783e17,
+    type: 3}
+  nearRightInnerPrefab: {fileID: 7447088418592093726, guid: 91da5963ade2d534fa1c08c4c47ee188,
+    type: 3}
+  nearRightOuterPrefab: {fileID: 7447088418592093726, guid: b71fcf3210c43f04a8945c877a911ec7,
+    type: 3}
