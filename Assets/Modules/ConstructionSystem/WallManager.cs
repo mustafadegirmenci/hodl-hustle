@@ -54,66 +54,79 @@ namespace SunkCost.HH.Modules.ConstructionSystem
         {
             ClearWalls();
             
-            var minX = int.MaxValue;
-            var maxX = int.MinValue;
-            var minZ = int.MaxValue;
-            var maxZ = int.MinValue;
-            
             foreach (var room in rooms)
             {
                 foreach (var (gridTile, roomTile) in room.Tiles)
                 {
+            
+                    var minX = int.MaxValue;
+                    var maxX = int.MinValue;
+                    var minZ = int.MaxValue;
+                    var maxZ = int.MinValue;
+                    
                     var coords = gridTile.Coordinates;
 
                     if (coords.X < minX) minX = coords.X;
                     if (coords.X > maxX) maxX = coords.X;
                     if (coords.Z < minZ) minZ = coords.Z;
                     if (coords.Z > maxZ) maxZ = coords.Z;
-                }
-            }
-
-            for (var x = minX - 1; x <= maxX; x++)
-            {
-                for (var z = minZ - 1; z <= maxZ; z++)
-                {
-                    var wallCode = WallCode.None;
                     
-                    var nearLeftCoord = new GridCoordinate(x, z);
-                    if (gridManager.Tiles.ContainsKey(nearLeftCoord))
+                    for (var x = minX - 1; x <= maxX; x++)
                     {
-                        if (gridManager.Tiles[nearLeftCoord].Occupant is RoomTile occupant)
+                        for (var z = minZ - 1; z <= maxZ; z++)
                         {
-                            wallCode |= WallCode.NearLeft;
+                            var wallCode = WallCode.None;
+                    
+                            var nearLeftCoord = new GridCoordinate(x, z);
+                            if (gridManager.Tiles.ContainsKey(nearLeftCoord))
+                            {
+                                if (gridManager.Tiles[nearLeftCoord].Occupant is RoomTile occupant)
+                                {
+                                    if (occupant.Room == room)
+                                    {
+                                        wallCode |= WallCode.NearLeft;
+                                    }
+                                }
+                            }
+                    
+                            var nearRightCoord = new GridCoordinate(x + 1, z);
+                            if (gridManager.Tiles.ContainsKey(nearRightCoord))
+                            {
+                                if (gridManager.Tiles[nearRightCoord].Occupant is RoomTile occupant)
+                                {
+                                    if (occupant.Room == room)
+                                    {
+                                        wallCode |= WallCode.NearRight;
+                                    }
+                                }
+                            }
+                            var farLeftCoord = new GridCoordinate(x, z + 1);
+                            if (gridManager.Tiles.ContainsKey(farLeftCoord))
+                            {
+                                if (gridManager.Tiles[farLeftCoord].Occupant is RoomTile occupant)
+                                {
+                                    if (occupant.Room == room)
+                                    {
+                                        wallCode |= WallCode.FarLeft;
+                                    }
+                                }
+                            }
+                    
+                            var farRightCoord = new GridCoordinate(x + 1, z + 1);
+                            if (gridManager.Tiles.ContainsKey(farRightCoord))
+                            {
+                                if (gridManager.Tiles[farRightCoord].Occupant is RoomTile occupant)
+                                {
+                                    if (occupant.Room == room)
+                                    {
+                                        wallCode |= WallCode.FarRight;
+                                    }
+                                }
+                            }
+                    
+                            SpawnSingleWall(wallCode, x, z);
                         }
                     }
-                    
-                    var nearRightCoord = new GridCoordinate(x + 1, z);
-                    if (gridManager.Tiles.ContainsKey(nearRightCoord))
-                    {
-                        if (gridManager.Tiles[nearRightCoord].Occupant is RoomTile)
-                        {
-                            wallCode |= WallCode.NearRight;
-                        }
-                    }
-                    var farLeftCoord = new GridCoordinate(x, z + 1);
-                    if (gridManager.Tiles.ContainsKey(farLeftCoord))
-                    {
-                        if (gridManager.Tiles[farLeftCoord].Occupant is RoomTile)
-                        {
-                            wallCode |= WallCode.FarLeft;
-                        }
-                    }
-                    
-                    var farRightCoord = new GridCoordinate(x + 1, z + 1);
-                    if (gridManager.Tiles.ContainsKey(farRightCoord))
-                    {
-                        if (gridManager.Tiles[farRightCoord].Occupant is RoomTile)
-                        {
-                            wallCode |= WallCode.FarRight;
-                        }
-                    }
-                    
-                    SpawnSingleWall(wallCode, x, z);
                 }
             }
         }

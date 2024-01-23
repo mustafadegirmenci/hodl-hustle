@@ -86,7 +86,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
                     rotation: Quaternion.identity,
                     parent: roomTilesContainer
                 );
-        
+
+                newRoomTile.Room = this;
                 Tiles.Add(gridTile, newRoomTile);
                 gridTile.Occupant = newRoomTile;
             }
