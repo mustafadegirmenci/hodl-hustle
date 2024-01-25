@@ -7,7 +7,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
 {
     public class ConstructionIndicator : MonoBehaviour
     {
-        [SerializeField] private ConstructionManager constructionManager;
+        [SerializeField] private ConstructionSelectionHandler constructionSelectionHandler;
+        [SerializeField] private ConstructionStateHandler constructionStateHandler;
 
         private List<Renderer> _renderers;
 
@@ -18,12 +19,12 @@ namespace SunkCost.HH.Modules.ConstructionSystem
 
         private void Start()
         {
-            constructionManager.onIndicatorPositionChanged.AddListener(pos =>
+            constructionSelectionHandler.onSelectionIndicatorChanged.AddListener(indicatorTile =>
             {
-                transform.DOMove(pos, 0.2f);
+                transform.DOMove(indicatorTile.WorldPosition, 0.2f);
             });
             
-            constructionManager.onStateChanged.AddListener(constructionState =>
+            constructionStateHandler.onStateChanged.AddListener(constructionState =>
             {
                 if (constructionState == ConstructionState.Passive)
                 {
