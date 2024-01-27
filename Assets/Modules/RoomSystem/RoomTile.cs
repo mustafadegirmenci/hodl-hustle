@@ -1,5 +1,4 @@
-﻿using SunkCost.HH.Modules.DecorationSystem;
-using SunkCost.HH.Modules.GridSystem;
+﻿using SunkCost.HH.Modules.GridSystem;
 using UnityEngine;
 
 namespace SunkCost.HH.Modules.RoomSystem
@@ -7,10 +6,6 @@ namespace SunkCost.HH.Modules.RoomSystem
     public class RoomTile : MonoBehaviour, IGridOccupant
     {
         public Room room;
-        public DecorationItem farLeftDecorationItem;
-        public DecorationItem farRightDecorationItem;
-        public DecorationItem nearLeftDecorationItem;
-        public DecorationItem nearRightDecorationItem;
         
         private RoomTileState _currentState;
 

@@ -15,6 +15,8 @@ namespace SunkCost.HH.Modules.InputSystem
         [HideInInspector] public UnityEvent onMouseDown = new();
         [HideInInspector] public UnityEvent onMouseUp = new();
         [HideInInspector] public UnityEvent onMouseDelta = new();
+        [HideInInspector] public UnityEvent onMouseSecondaryClick = new();
+        [HideInInspector] public UnityEvent onRotateItem = new();
         [HideInInspector] public bool mouseDragging = false;
 
         public Vector2 MousePosition => _controls.Office.MousePosition.ReadValue<Vector2>();
@@ -114,6 +116,22 @@ namespace SunkCost.HH.Modules.InputSystem
             if (context.started)
             {
                 onMouseDelta.Invoke();
+            }
+        }
+
+        public void OnMouseSecondaryClick(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                onMouseSecondaryClick.Invoke();
+            }
+        }
+
+        public void OnRotateItem(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                onRotateItem.Invoke();
             }
         }
     }

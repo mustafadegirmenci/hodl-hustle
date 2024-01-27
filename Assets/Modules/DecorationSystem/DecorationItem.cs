@@ -1,83 +1,32 @@
-﻿using System.Collections;
-using DG.Tweening;
-using SunkCost.HH.Modules.InputSystem;
-using SunkCost.HH.Modules.RoomSystem;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace SunkCost.HH.Modules.DecorationSystem
 {
-    public class DecorationItem : MonoBehaviour , IPointerDownHandler
+    public class DecorationItem : MonoBehaviour, IPointerDownHandler
     {
-        private Room _ownerRoom;
-        private Coroutine _placementRoutine;
+        [HideInInspector] public UnityEvent onClicked = new();
 
-        private bool CanBePlaced
-        {
-            get => _canBePlaced;
-            set
-            {
-                if (value == _canBePlaced)
-                {
-                    return;
-                }
+        private Renderer _renderer;
 
-                _canBePlaced = value;
-                OnPlaceabilityChanged(value);
-            }
-        }
-        private bool _canBePlaced;
-        
         private void Start()
         {
-            InputManager.instance.onMouseUp.AddListener(HandleMouseUp);
+            _renderer = GetComponent<Renderer>();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (_placementRoutine != null)
-            {
-                return;
-            }
-            
-            _placementRoutine = StartCoroutine(nameof(Placement));
+            onClicked.Invoke();
         }
-        
-        private void HandleMouseUp()
+
+        public List<Bounds> GetBounds()
         {
-            if (_placementRoutine == null)
-            {
-                return;
-            }
-            
-            StopCoroutine(_placementRoutine);
-        }
-        
-        private IEnumerator Placement()
-        {
-            while (true)
-            {
-                if (DecorationManager.instance.GetWorldHit(out var point))
-                {
-                    transform.DOMove(point, 0.2f);
-                }
-                yield return new WaitForEndOfFrame();
-            }
-        }
-        
-        private void OnPlaceabilityChanged(bool newState)
-        {
-            var ren = GetComponent<Renderer>();
-            var mat = ren.material;
-            
-            if (newState)
-            {
-                mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, 1f);
-            }
-            else
-            {
-                mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, 0.5f);
-            }
+            return GetComponentsInChildren<Renderer>()
+                .Select(r => r.bounds)
+                .ToList();
         }
     }
 }

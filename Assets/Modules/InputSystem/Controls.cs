@@ -209,6 +209,24 @@ namespace Modules.InputSystem
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseSecondaryClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c51cc51-8000-4956-83cc-5d3f95257e0e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""36f1240f-6b5f-430e-bfcd-40f5febb78a2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -242,6 +260,28 @@ namespace Modules.InputSystem
                     ""processors"": """",
                     ""groups"": ""Desktop"",
                     ""action"": ""MouseDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eef12089-e301-4c6c-89d9-5d3b66550902"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""MouseSecondaryClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a73aa332-f77d-40d5-b144-6e489666c500"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""RotateItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -278,6 +318,8 @@ namespace Modules.InputSystem
             m_Office_MousePosition = m_Office.FindAction("MousePosition", throwIfNotFound: true);
             m_Office_MouseClick = m_Office.FindAction("MouseClick", throwIfNotFound: true);
             m_Office_MouseDelta = m_Office.FindAction("MouseDelta", throwIfNotFound: true);
+            m_Office_MouseSecondaryClick = m_Office.FindAction("MouseSecondaryClick", throwIfNotFound: true);
+            m_Office_RotateItem = m_Office.FindAction("RotateItem", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -412,6 +454,8 @@ namespace Modules.InputSystem
         private readonly InputAction m_Office_MousePosition;
         private readonly InputAction m_Office_MouseClick;
         private readonly InputAction m_Office_MouseDelta;
+        private readonly InputAction m_Office_MouseSecondaryClick;
+        private readonly InputAction m_Office_RotateItem;
         public struct OfficeActions
         {
             private @Controls m_Wrapper;
@@ -419,6 +463,8 @@ namespace Modules.InputSystem
             public InputAction @MousePosition => m_Wrapper.m_Office_MousePosition;
             public InputAction @MouseClick => m_Wrapper.m_Office_MouseClick;
             public InputAction @MouseDelta => m_Wrapper.m_Office_MouseDelta;
+            public InputAction @MouseSecondaryClick => m_Wrapper.m_Office_MouseSecondaryClick;
+            public InputAction @RotateItem => m_Wrapper.m_Office_RotateItem;
             public InputActionMap Get() { return m_Wrapper.m_Office; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -437,6 +483,12 @@ namespace Modules.InputSystem
                 @MouseDelta.started += instance.OnMouseDelta;
                 @MouseDelta.performed += instance.OnMouseDelta;
                 @MouseDelta.canceled += instance.OnMouseDelta;
+                @MouseSecondaryClick.started += instance.OnMouseSecondaryClick;
+                @MouseSecondaryClick.performed += instance.OnMouseSecondaryClick;
+                @MouseSecondaryClick.canceled += instance.OnMouseSecondaryClick;
+                @RotateItem.started += instance.OnRotateItem;
+                @RotateItem.performed += instance.OnRotateItem;
+                @RotateItem.canceled += instance.OnRotateItem;
             }
 
             private void UnregisterCallbacks(IOfficeActions instance)
@@ -450,6 +502,12 @@ namespace Modules.InputSystem
                 @MouseDelta.started -= instance.OnMouseDelta;
                 @MouseDelta.performed -= instance.OnMouseDelta;
                 @MouseDelta.canceled -= instance.OnMouseDelta;
+                @MouseSecondaryClick.started -= instance.OnMouseSecondaryClick;
+                @MouseSecondaryClick.performed -= instance.OnMouseSecondaryClick;
+                @MouseSecondaryClick.canceled -= instance.OnMouseSecondaryClick;
+                @RotateItem.started -= instance.OnRotateItem;
+                @RotateItem.performed -= instance.OnRotateItem;
+                @RotateItem.canceled -= instance.OnRotateItem;
             }
 
             public void RemoveCallbacks(IOfficeActions instance)
@@ -488,6 +546,8 @@ namespace Modules.InputSystem
             void OnMousePosition(InputAction.CallbackContext context);
             void OnMouseClick(InputAction.CallbackContext context);
             void OnMouseDelta(InputAction.CallbackContext context);
+            void OnMouseSecondaryClick(InputAction.CallbackContext context);
+            void OnRotateItem(InputAction.CallbackContext context);
         }
     }
 }

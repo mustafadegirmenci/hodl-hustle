@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.RoomSystem;
 using UnityEngine;
@@ -12,8 +11,6 @@ namespace SunkCost.HH.Modules.WallSystem
         [SerializeField] private RoomManager roomManager;
         
         [SerializeField] private GridTileHandler gridTileHandler;
-        
-        private readonly List<GameObject> _walls = new();
 
         private void Start()
         {
@@ -22,13 +19,12 @@ namespace SunkCost.HH.Modules.WallSystem
 
         private void UpdateWalls(List<Room> rooms)
         {
-            ClearWalls();
-            
             foreach (var room in rooms)
             {
-                foreach (var (gridTile, roomTile) in room.Tiles)
+                room.roomWallHandler.ClearWalls();
+                
+                foreach (var (key, (gridTile, roomTile)) in room.Tiles)
                 {
-            
                     var minX = int.MaxValue;
                     var maxX = int.MinValue;
                     var minZ = int.MaxValue;
@@ -94,29 +90,11 @@ namespace SunkCost.HH.Modules.WallSystem
                                 }
                             }
                     
-                            SpawnSingleWall(room, wallCode, x, z);
+                            var worldPos = wallGrid.CellToWorld(new Vector3Int(x, 0, z));
+                            room.roomWallHandler.SpawnWall(wallCode, worldPos);
                         }
                     }
                 }
-            }
-        }
-
-        private void SpawnSingleWall(Room room, WallCode code, int x, int z)
-        {
-            var worldPos = wallGrid.CellToWorld(new Vector3Int(x, 0, z));
-            
-            if (room.WallPrefabs.TryGetValue(code, out var prefab))
-            {
-                _walls.Add(Instantiate(prefab, worldPos, Quaternion.identity));
-            }
-        }
-
-        private void ClearWalls()
-        {
-            foreach (var wall in _walls.ToList())
-            {
-                Destroy(wall);
-                _walls.Remove(wall);
             }
         }
     }

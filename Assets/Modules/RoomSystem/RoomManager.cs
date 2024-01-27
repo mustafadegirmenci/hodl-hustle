@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SunkCost.HH.Modules.GridSystem;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ namespace SunkCost.HH.Modules.RoomSystem
     {
         [HideInInspector] public UnityEvent<List<Room>> onRoomsChanged = new();
         
+        [SerializeField] private GridTileHandler gridTileHandler;
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform roomsContainer;
 
@@ -20,6 +22,27 @@ namespace SunkCost.HH.Modules.RoomSystem
         private void Start()
         {
             startRoomCreationButton.onClick.AddListener(CreateRoom);
+        }
+
+        public bool TryWorldPointToRoom(Vector3 point, out Room room)
+        {
+            if (!gridTileHandler.TryWorldToTile(point, out var gridTile))
+            {
+                room = null;
+                return false;
+            }
+
+            foreach (var r in Rooms)
+            {
+                if (r.Tiles.TryGetValue(gridTile.Coordinates, out var tuple))
+                {
+                    room = tuple.Item2.room;
+                    return true;
+                }
+            }
+
+            room = null;
+            return false;
         }
 
         private void CreateRoom()

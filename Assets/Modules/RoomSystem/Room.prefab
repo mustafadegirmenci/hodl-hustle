@@ -400,6 +400,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8100777999440022311}
   - component: {fileID: 7053252312459481352}
+  - component: {fileID: 495515288254381773}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -436,14 +437,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccc076f187434344b9293fecd2278c94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomWallHandler: {fileID: 495515288254381773}
   onRoomChanged:
     m_PersistentCalls:
       m_Calls: []
+  startEditingRoomButton: {fileID: 8711012220415674862}
+  roomCanvas: {fileID: 6686917651206706340}
   roomTilePrefab: {fileID: 4677503433882711758, guid: 73ab0a52e6188e041879ee1efabe02c8,
     type: 3}
   roomTilesContainer: {fileID: 5360696266973711695}
-  startEditingRoomButton: {fileID: 8711012220415674862}
-  roomCanvas: {fileID: 6686917651206706340}
+--- !u!114 &495515288254381773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8689037735463324420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae53a72ad1d4f72a4c92dba398ba19c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   farLeftInnerPrefab: {fileID: 2427957127504817746, guid: 5f00084b4082e0842b55e4942ec75ab5,
     type: 3}
   farLeftOuterPrefab: {fileID: 2427957127504817746, guid: 357d1b468dfc1214090f3a841e6fc0a0,
