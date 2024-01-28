@@ -11,13 +11,14 @@ namespace SunkCost.HH.Modules.DecorationSystem
         [SerializeField] private DecorationManager decorationManager;
         [SerializeField] private GridTileHandler decorationGridTileHandler;
         
-        private readonly List<Transform> _placementIndicators = new();
+        public readonly List<Transform> PlacementIndicators = new();
 
         private void Start()
         {
             decorationManager.onDecorationItemHeld.AddListener(UpdatePlacementIndicators);
             decorationManager.onDecorationItemRotated.AddListener(UpdatePlacementIndicators);
             decorationManager.onDecorationItemPlaced.AddListener(ClearPlacementIndicators);
+            decorationManager.onPlaceabilityChanged.AddListener(UpdateIndicatorColors);
         }
 
         private void UpdatePlacementIndicators(DecorationItem item)
@@ -30,7 +31,7 @@ namespace SunkCost.HH.Modules.DecorationSystem
             
             foreach (var indicatorPos in indicatorWorldPositions)
             {
-                _placementIndicators.Add(Instantiate(placementIndicatorPrefab, 
+                PlacementIndicators.Add(Instantiate(placementIndicatorPrefab, 
                     indicatorPos,
                     Quaternion.identity,
                     item.transform)
@@ -38,11 +39,21 @@ namespace SunkCost.HH.Modules.DecorationSystem
             }
         }
 
+        private void UpdateIndicatorColors(bool validity)
+        {
+            foreach (var placementIndicator in PlacementIndicators)
+            {
+                placementIndicator.GetComponentsInChildren<Renderer>()
+                    .ToList()
+                    .ForEach(r => r.material.color = validity ? Color.green : Color.red);
+            }
+        }
+
         private void ClearPlacementIndicators()
         {
-            foreach (var placementIndicator in _placementIndicators.ToList())
+            foreach (var placementIndicator in PlacementIndicators.ToList())
             {
-                _placementIndicators.Remove(placementIndicator);
+                PlacementIndicators.Remove(placementIndicator);
                 Destroy(placementIndicator.gameObject);
             }
         }

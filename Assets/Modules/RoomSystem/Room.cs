@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SunkCost.HH.Modules.ConstructionSystem;
 using SunkCost.HH.Modules.GridSystem;
+using SunkCost.HH.Modules.UiSystem;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace SunkCost.HH.Modules.RoomSystem
 {
@@ -16,16 +15,11 @@ namespace SunkCost.HH.Modules.RoomSystem
         public readonly Dictionary<Vector3Int, (GridTile, RoomTile)> Tiles = new();
         
         [HideInInspector] public UnityEvent<List<GridTile>> onRoomChanged = new();
+        [HideInInspector] public UnityEvent onEditStarted = new();
+        [HideInInspector] public UnityEvent onEditFinished = new();
         
-        [SerializeField] private Button startEditingRoomButton;
-        [SerializeField] private Canvas roomCanvas;
         [SerializeField] private RoomTile roomTilePrefab;
         [SerializeField] private Transform roomTilesContainer;
-
-        private void Start()
-        {
-            startEditingRoomButton.onClick.AddListener(StartEditing);
-        }
 
         public void StartEditing()
         {
@@ -33,8 +27,6 @@ namespace SunkCost.HH.Modules.RoomSystem
             {
                 return;
             }
-
-            startEditingRoomButton.gameObject.SetActive(false);
             
             ConstructionManager.instance.onConstructionEnded.AddListener(UpdateTiles);
             ConstructionManager.instance.onConstructionEnded.AddListener(_ => FinishEditing());
@@ -44,14 +36,13 @@ namespace SunkCost.HH.Modules.RoomSystem
                 roomTile.SetState(RoomTileState.UnderConstruction);
                 gridTile.Occupant = null;
             }
+            onEditStarted.Invoke();
         }
 
         private void FinishEditing()
         {
             ConstructionManager.instance.onConstructionEnded.RemoveListener(UpdateTiles);
             ConstructionManager.instance.onConstructionEnded.RemoveListener(_ => FinishEditing());
-            
-            startEditingRoomButton.gameObject.SetActive(true);
             
             ConstructionManager.instance.onConstructionEnded.RemoveListener(UpdateTiles);
             
@@ -62,6 +53,7 @@ namespace SunkCost.HH.Modules.RoomSystem
             }
             
             onRoomChanged.Invoke(Tiles.Values.Select(kvp => kvp.Item1).ToList());
+            onEditFinished.Invoke();
         }
 
         private void UpdateTiles(List<GridTile> gridTiles)
@@ -88,27 +80,6 @@ namespace SunkCost.HH.Modules.RoomSystem
                 newRoomTile.room = this;
                 Tiles.Add(gridTile.Coordinates, (gridTile, newRoomTile));
                 gridTile.Occupant = newRoomTile;
-            }
-
-            var canvasRect = roomCanvas.GetComponent<RectTransform>();
-
-            if (Tiles.Count == 0)
-            {
-                canvasRect.gameObject.SetActive(false);
-            }
-            else
-            {
-                canvasRect.gameObject.SetActive(true);
-                
-                var averagePosition = Vector3.zero;
-                foreach (var tile in Tiles.Values.Select(kvp => kvp.Item1))
-                {
-                    averagePosition += tile.WorldPosition;
-                }
-                averagePosition /= Tiles.Count;
-                averagePosition.y += 3.0f;
-
-                roomCanvas.GetComponent<RectTransform>().position = averagePosition;
             }
         }
 

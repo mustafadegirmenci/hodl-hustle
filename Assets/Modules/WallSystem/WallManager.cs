@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SunkCost.HH.Modules.ConstructionSystem;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.RoomSystem;
 using UnityEngine;
@@ -15,14 +16,23 @@ namespace SunkCost.HH.Modules.WallSystem
         private void Start()
         {
             roomManager.onRoomsChanged.AddListener(UpdateWalls);
+            ConstructionManager.instance.onConstructionStarted.AddListener(_ => ClearWalls());
+        }
+
+        private void ClearWalls()
+        {
+            foreach (var room in roomManager.Rooms)
+            {
+                room.roomWallHandler.ClearWalls();
+            }
         }
 
         private void UpdateWalls(List<Room> rooms)
         {
+            ClearWalls();
+            
             foreach (var room in rooms)
             {
-                room.roomWallHandler.ClearWalls();
-                
                 foreach (var (key, (gridTile, roomTile)) in room.Tiles)
                 {
                     var minX = int.MaxValue;

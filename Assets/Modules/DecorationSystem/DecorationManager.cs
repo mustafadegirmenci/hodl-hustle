@@ -13,8 +13,10 @@ namespace SunkCost.HH.Modules.DecorationSystem
         [HideInInspector] public UnityEvent<DecorationItem> onDecorationItemHeld = new();
         [HideInInspector] public UnityEvent<DecorationItem> onDecorationItemRotated = new();
         [HideInInspector] public UnityEvent onDecorationItemPlaced = new();
+        [HideInInspector] public UnityEvent<bool> onPlaceabilityChanged = new();
         
         [SerializeField] private GridIndicationHandler decorationGridIndicationHandler;
+        [SerializeField] private DecorationIndicationHandler decorationIndicationHandler;
         [SerializeField] private RoomManager roomManager;
         [SerializeField] private DecorationItem test;
 
@@ -92,7 +94,7 @@ namespace SunkCost.HH.Modules.DecorationSystem
 
             if (_rotationTween is { active: true })
             {
-                _rotationTween.Kill();
+                return;
             }
             
             _rotationTween = _currentDecorationItem.transform.DORotate(
@@ -103,13 +105,18 @@ namespace SunkCost.HH.Modules.DecorationSystem
 
         private void ValidatePlacability()
         {
-            if (!roomManager.TryWorldPointToRoom(_currentDecorationItem.transform.position, out var room))
+            foreach (var placementIndicator in decorationIndicationHandler.PlacementIndicators)
             {
-                _canBePlaced = false;
-                return;
+                if (!roomManager.TryWorldPointToRoom(placementIndicator.position, out var room))
+                {
+                    _canBePlaced = false;
+                    onPlaceabilityChanged.Invoke(false);
+                    return;
+                }
             }
 
             _canBePlaced = true;
+            onPlaceabilityChanged.Invoke(true);
         }
     }
 }

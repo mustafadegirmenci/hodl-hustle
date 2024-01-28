@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using SunkCost.HH.Modules.ConstructionSystem;
 using SunkCost.HH.Modules.GridSystem;
+using SunkCost.HH.Modules.UiSystem;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace SunkCost.HH.Modules.RoomSystem
 {
@@ -14,14 +15,21 @@ namespace SunkCost.HH.Modules.RoomSystem
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform roomsContainer;
 
-        [SerializeField] private Button startRoomCreationButton;
+        [SerializeField] private SC_Button startRoomCreationButton;
 
         public readonly List<Room> Rooms = new();
-        private static int _roomCount = 0;
+        private static int _roomCount;
 
         private void Start()
         {
             startRoomCreationButton.onClick.AddListener(CreateRoom);
+
+            ConstructionManager.instance.onConstructionStarted.AddListener(
+                _ => startRoomCreationButton.gameObject.SetActive(false)
+            );
+            ConstructionManager.instance.onConstructionEnded.AddListener(
+                _ => startRoomCreationButton.gameObject.SetActive(true)
+            );
         }
 
         public bool TryWorldPointToRoom(Vector3 point, out Room room)
@@ -61,6 +69,7 @@ namespace SunkCost.HH.Modules.RoomSystem
                 {
                     Rooms.Remove(newRoom);
                     Destroy(newRoom.gameObject);
+                    _roomCount--;
                 }
                 onRoomsChanged.Invoke(Rooms);
             });

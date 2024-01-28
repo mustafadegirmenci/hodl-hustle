@@ -4,11 +4,13 @@ namespace SunkCost.HH.Modules.ScaffoldSystem
 {
     public class Scaffold : MonoBehaviour
     {
+        [SerializeField] private GameObject scaffold;
+        [SerializeField] private GameObject selector;
         private Renderer _renderer;
 
         private void Awake()
         {
-            _renderer = GetComponentInChildren<Renderer>();
+            _renderer = selector.GetComponentInChildren<Renderer>();
         }
 
         public void SetState(ScaffoldState state)
@@ -17,15 +19,20 @@ namespace SunkCost.HH.Modules.ScaffoldSystem
             
             if (state is ScaffoldState.Persistent)
             {
-                material.color = new Color(0, 0, 0, 0.2f);
+                scaffold.SetActive(true);
+                selector.SetActive(false);
             }
             else if (state is ScaffoldState.SelectionToAdd)
             {
-                material.color = new Color(0, 200, 0, 0.2f);
+                scaffold.SetActive(false);
+                selector.SetActive(true);
+                material.color = new Color(0, 1f, 0, 1f);
             }
             else if (state is ScaffoldState.SelectionToRemove)
             {
-                material.color = new Color(200, 0, 0, 0.2f);
+                scaffold.SetActive(false);
+                selector.SetActive(true);
+                material.color = new Color(1f, 0, 0, 1f);
             }
         }
     }
