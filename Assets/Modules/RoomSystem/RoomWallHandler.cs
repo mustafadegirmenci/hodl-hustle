@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SunkCost.HH.Modules.WallSystem;
 using UnityEngine;
@@ -10,6 +9,7 @@ namespace SunkCost.HH.Modules.RoomSystem
     {
         public readonly List<GameObject> WallObjects = new();
         public readonly Dictionary<WallCode, GameObject> WallPrefabs = new();
+        [SerializeField] private Transform wallsContainer;
         
         [SerializeField] private GameObject farLeftInnerPrefab;
         [SerializeField] private GameObject farLeftOuterPrefab;
@@ -33,7 +33,7 @@ namespace SunkCost.HH.Modules.RoomSystem
         {
             if (WallPrefabs.TryGetValue(code, out var prefab))
             {
-                WallObjects.Add(Instantiate(prefab, worldPosition, Quaternion.identity));
+                WallObjects.Add(Instantiate(prefab, worldPosition, Quaternion.identity, wallsContainer));
             }
         }
 

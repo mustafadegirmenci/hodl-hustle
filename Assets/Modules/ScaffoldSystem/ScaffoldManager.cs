@@ -29,16 +29,16 @@ namespace SunkCost.HH.Modules.ScaffoldSystem
 
         private void UpdateVolatileScaffolds(List<GridTile> tiles)
         {
-            var removedTiles = _volatileScaffolds.Keys.Where(t => !tiles.Contains(t));
-            var addedTiles = tiles.Where(t => !_volatileScaffolds.Keys.Contains(t));
-            
-            foreach (var removed in removedTiles.ToList())
+            var removedTiles = _volatileScaffolds.Keys.Where(t => !tiles.Contains(t)).ToHashSet();
+            var addedTiles = tiles.Where(t => !_volatileScaffolds.ContainsKey(t)).ToHashSet();
+
+            foreach (var removed in removedTiles)
             {
                 Destroy(_volatileScaffolds[removed].gameObject);
                 _volatileScaffolds.Remove(removed);
             }
-            
-            foreach (var added in addedTiles.ToList())
+
+            foreach (var added in addedTiles)
             {
                 var newScaffold = Instantiate(
                     original: scaffoldPrefab,

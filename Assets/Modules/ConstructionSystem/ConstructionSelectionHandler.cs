@@ -113,7 +113,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             {
                 constructionStateHandler.CurrentState = ConstructionState.WaitingToSelectTilesToBeAdded;
 
-                if (constructionValidationHandler.IsSelectionValid)
+                var tilesToValidate = PersistentSelection.Concat(VolatileSelection).ToList();
+                if (constructionValidationHandler.ValidateSelection(tilesToValidate))
                 {
                     AddVolatileSelectionToPersistent();
                 }
@@ -126,7 +127,8 @@ namespace SunkCost.HH.Modules.ConstructionSystem
             {
                 constructionStateHandler.CurrentState = ConstructionState.WaitingToSelectTilesToBeRemoved;
                 
-                if (constructionValidationHandler.IsSelectionValid)
+                var tilesToValidate = PersistentSelection.Except(VolatileSelection).ToList();
+                if (constructionValidationHandler.ValidateSelection(tilesToValidate))
                 {
                     RemoveVolatileSelectionFromPersistent();
                 }

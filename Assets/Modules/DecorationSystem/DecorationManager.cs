@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System.Linq;
+using System.Collections.Generic;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.InputSystem;
 using SunkCost.HH.Modules.RoomSystem;
@@ -10,113 +11,134 @@ namespace SunkCost.HH.Modules.DecorationSystem
 {
     public class DecorationManager : MonoSingleton<DecorationManager>
     {
-        [HideInInspector] public UnityEvent<DecorationItem> onDecorationItemHeld = new();
-        [HideInInspector] public UnityEvent<DecorationItem> onDecorationItemRotated = new();
-        [HideInInspector] public UnityEvent onDecorationItemPlaced = new();
-        [HideInInspector] public UnityEvent<bool> onPlaceabilityChanged = new();
+        [HideInInspector] public UnityEvent<DecorationItem> onCurrentDecorationItemChanged = new();
+        public readonly Dictionary<Vector3Int, DecorationItem> PlacedDecorationItems = new();
         
-        [SerializeField] private GridIndicationHandler decorationGridIndicationHandler;
-        [SerializeField] private DecorationIndicationHandler decorationIndicationHandler;
         [SerializeField] private RoomManager roomManager;
-        [SerializeField] private DecorationItem test;
+        [SerializeField] private GridTileHandler decorationGridTileHandler;
+        [SerializeField] private GridIndicationHandler decorationGridIndicationHandler;
+        [SerializeField] private DecorationValidationHandler decorationValidationHandler;
+        [SerializeField] private Transform decorationItemsContainer;
 
+        private DecorationItem currentDecorationItem
+        {
+            get => _currentDecorationItem;
+            set
+            {
+                if (value == _currentDecorationItem)
+                {
+                    return;
+                }
+
+                _currentDecorationItem = value;
+                onCurrentDecorationItemChanged.Invoke(_currentDecorationItem);
+            }
+        }
         private DecorationItem _currentDecorationItem;
-        private bool _held;
-        private bool _canBePlaced;
-        private Vector3 _cachedPosition;
-        private Tween _rotationTween;
-        
+
         private void Start()
         {
             InputManager.instance.onMouseUp.AddListener(PlaceItem);
             InputManager.instance.onRotateItem.AddListener(RotateHeldItem);
-            AddDecorationItem(test);
         }
 
-        public void AddDecorationItem(DecorationItem decorationItem)
+        public void SpawnDecorationItem(DecorationItem prefab)
         {
-            decorationItem.onClicked.AddListener(() => HoldItem(decorationItem));
+            var newItem = Instantiate(original: prefab, parent: decorationItemsContainer);
+            newItem.onClicked.AddListener(() => HoldItem(newItem));
+            HoldItem(newItem);
+        }
+        
+        public bool TryWorldPointToDecorationItem(Vector3 point, out DecorationItem item)
+        {
+            item = null;
+            
+            if (!roomManager.TryWorldPointToRoom(point, out var room))
+            {
+                return false;
+            }
+
+            if (!decorationGridTileHandler.TryWorldToTile(point, out var decorationTile))
+            {
+                return false;
+            }
+
+            if (!PlacedDecorationItems.TryGetValue(decorationTile.Coordinates, out item))
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public void HoldItem(DecorationItem item)
+        private void HoldItem(DecorationItem item)
         {
-            if (_currentDecorationItem != null && _held)
+            if (currentDecorationItem != null)
             {
                 return;
             }
 
-            _held = true;
-            _currentDecorationItem = item;
-            _cachedPosition = _currentDecorationItem.transform.position;
+            if (!item.Hold())
+            {
+                return;
+            }
+
+            currentDecorationItem = item;
             decorationGridIndicationHandler.onIndicatedTileChanged.AddListener(MoveItemWithIndicator);
-            onDecorationItemHeld.Invoke(_currentDecorationItem);
         }
         
         private void PlaceItem()
         {
-            if (_currentDecorationItem == null)
+            if (currentDecorationItem == null)
             {
                 return;
             }
             
-            _held = false;
-            
-            if (_canBePlaced)
+            if (!decorationValidationHandler.CanBePlaced)
             {
-                onDecorationItemPlaced.Invoke();
-                _currentDecorationItem = null;
-                decorationGridIndicationHandler.onIndicatedTileChanged.RemoveListener(MoveItemWithIndicator);
+                return;
             }
+
+            if (!currentDecorationItem.Place())
+            {
+                return;
+            }
+            
+            var occupiedDecorationTileWorldPoints = decorationGridTileHandler
+                .GetCellCoordsInBounds(currentDecorationItem.GetBounds())
+                .Select(decorationGridTileHandler.CellCoordsToWorldPosition);
+            
+            foreach (var worldPoint in occupiedDecorationTileWorldPoints)
+            {
+                if (!decorationGridTileHandler.TryWorldToTile(worldPoint, out var occupiedDecorationTile))
+                {
+                    continue;
+                }
+                
+                PlacedDecorationItems.Add(occupiedDecorationTile.Coordinates, currentDecorationItem);
+            }
+            currentDecorationItem = null;
+            decorationGridIndicationHandler.onIndicatedTileChanged.RemoveListener(MoveItemWithIndicator);
         }
         
         private void MoveItemWithIndicator(GridTile indicator)
         {
-            if (_currentDecorationItem == null)
+            if (currentDecorationItem == null)
             {
                 return;
             }
             
-            if (!_held)
-            {
-                return;
-            }
-            
-            _currentDecorationItem.transform.DOMove(indicator.WorldPosition, 0.2f);
-            ValidatePlacability();
+            currentDecorationItem.Move(indicator.WorldPosition);
         }
 
         private void RotateHeldItem()
         {
-            if (_currentDecorationItem == null)
-            {
-                return;
-            }
-
-            if (_rotationTween is { active: true })
+            if (currentDecorationItem == null)
             {
                 return;
             }
             
-            _rotationTween = _currentDecorationItem.transform.DORotate(
-                _currentDecorationItem.transform.rotation.eulerAngles + new Vector3(0, 90, 0),
-                0.2f
-            );
-        }
-
-        private void ValidatePlacability()
-        {
-            foreach (var placementIndicator in decorationIndicationHandler.PlacementIndicators)
-            {
-                if (!roomManager.TryWorldPointToRoom(placementIndicator.position, out var room))
-                {
-                    _canBePlaced = false;
-                    onPlaceabilityChanged.Invoke(false);
-                    return;
-                }
-            }
-
-            _canBePlaced = true;
-            onPlaceabilityChanged.Invoke(true);
+            currentDecorationItem.RotateClockwise();
         }
     }
 }

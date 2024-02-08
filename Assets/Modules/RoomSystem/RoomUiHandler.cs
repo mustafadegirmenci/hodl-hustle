@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SunkCost.HH.Modules.DecorationSystem;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.UiSystem;
 using UnityEngine;
@@ -10,7 +11,8 @@ namespace SunkCost.HH.Modules.RoomSystem
     {
         [SerializeField] private Canvas roomCanvas;
         [SerializeField] private Room room;
-        [SerializeField] private SC_Button startEditingRoomButton;
+        [SerializeField] private SC_Button editRoomButton;
+        [SerializeField] private SC_Button decorateRoomButton;
         [SerializeField] private LineRenderer lineRenderer;
 
         private Transform _camTransform;
@@ -22,12 +24,26 @@ namespace SunkCost.HH.Modules.RoomSystem
 
         private void Start()
         {
-            startEditingRoomButton.onClick.AddListener(HandleStartEditingClicked);
+            editRoomButton.onClick.AddListener(HandleStartEditingClicked);
             room.onRoomChanged.AddListener(UpdateCanvasPosition);
-            room.onEditStarted.AddListener(() => startEditingRoomButton.gameObject.SetActive(false));
-            room.onEditFinished.AddListener(() => startEditingRoomButton.gameObject.SetActive(true));
+            room.onEditStarted.AddListener(() =>
+            {
+                roomCanvas.gameObject.SetActive(false);
+                lineRenderer.enabled = false;
+            });
+            room.onEditFinished.AddListener(() =>
+            {
+                roomCanvas.gameObject.SetActive(true);
+                lineRenderer.enabled = true;
+            });
+            decorateRoomButton.onClick.AddListener(() =>
+            {
+                DecorationUiHandler.instance.ShowDecorationItemsList();
+            });
             InitializeLine();
+            
             roomCanvas.gameObject.SetActive(false);
+            lineRenderer.enabled = false;
         }
 
         private void InitializeLine()
@@ -58,7 +74,7 @@ namespace SunkCost.HH.Modules.RoomSystem
 
         private void ScaleCanvasBasedOnDistance()
         {
-            const float scaleFactor = 0.1f;
+            const float scaleFactor = 0.03f;
 
             var distance = Vector3.Distance(roomCanvas.transform.position, _camTransform.position);
             var newScale = distance * scaleFactor;
@@ -83,24 +99,26 @@ namespace SunkCost.HH.Modules.RoomSystem
                 var averagePosition = tiles.Aggregate(Vector3.zero, (current, tile) => current + tile.WorldPosition);
                 averagePosition /= tiles.Count;
 
-                roomCanvas.GetComponent<RectTransform>().position = averagePosition + new Vector3(0, 3, 0);
+                roomCanvas.GetComponent<Transform>().position = averagePosition + new Vector3(0, 3, 0);
                 
-                DrawDashedLine(startEditingRoomButton.transform.position, averagePosition);
+                DrawDashedLine(roomCanvas.transform.position, averagePosition);
             }
         }
         
-        private void DrawDashedLine(Vector3 start, Vector3 end, float dashLength = 0.1f)
+        private void DrawDashedLine(Vector3 start, Vector3 end, float dashLength = 0.5f)
         {
-            var lineLength = Vector3.Distance(start, end);
-            var segments = Mathf.CeilToInt(lineLength / (2 * dashLength));
-            lineRenderer.positionCount = segments * 2;
+            Vector3 lineDirection = end - start;
+            float lineLength = lineDirection.magnitude;
+            lineDirection.Normalize();
 
-            var step = (end - start) / segments;
+            float dashCount = Mathf.Floor(lineLength / (dashLength + dashLength));
+            lineRenderer.positionCount = (int)dashCount * 2;
 
-            for (var i = 0; i < segments; i++)
+            for (int i = 0; i < dashCount; i++)
             {
-                var dashStart = start + i * step;
-                var dashEnd = start + (i + 0.5f) * step;
+                Vector3 dashStart = start + lineDirection * (i * (dashLength + dashLength));
+                Vector3 dashEnd = start + lineDirection * ((i + 1) * dashLength + i * dashLength);
+
                 lineRenderer.SetPosition(i * 2, dashStart);
                 lineRenderer.SetPosition(i * 2 + 1, dashEnd);
             }

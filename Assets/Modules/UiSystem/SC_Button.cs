@@ -17,9 +17,15 @@ namespace SunkCost.HH.Modules.UiSystem
         IPointerUpHandler
     {
         public UnityEvent onClick = new();
+        public UnityEvent onHoverEnter = new();
+        public UnityEvent onHoverExit = new();
+        public bool interactable = true;
 
         [SerializeField] private float animationTime = 0.1f;
-        [SerializeField] private float defaultAlpha = 0.8f;
+        [SerializeField] private float defaultImageAlpha = 0.8f;
+        [SerializeField] private float defaultTextAlpha = 0f;
+        [SerializeField] private float hoveredImageAlpha = 1f;
+        [SerializeField] private float hoveredTextAlpha = 1f;
         [SerializeField] private float pressedScale = 1f;
         [SerializeField] private float hoveredScale = 1.1f;
         
@@ -36,26 +42,34 @@ namespace SunkCost.HH.Modules.UiSystem
 
         private void Start()
         {
-            _images.ForEach(i => i.DOFade(defaultAlpha, 0));
-            _texts.ForEach(t => t.DOFade(0, 0));
+            _images.ForEach(i => i.DOFade(defaultImageAlpha, 0));
+            _texts.ForEach(t => t.DOFade(defaultTextAlpha, 0));
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _images.ForEach(i => i.DOFade(1, animationTime));
+            if (!interactable) return;
+            
+            _images.ForEach(i => i.DOFade(hoveredImageAlpha, animationTime));
             _transform.DOScale(hoveredScale, animationTime);
-            _texts.ForEach(t => t.DOFade(1, animationTime));
+            _texts.ForEach(t => t.DOFade(hoveredTextAlpha, animationTime));
+            
+            onHoverEnter.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _images.ForEach(i => i.DOFade(defaultAlpha, animationTime));
+            _images.ForEach(i => i.DOFade(defaultImageAlpha, animationTime));
             _transform.DOScale(1, animationTime);
-            _texts.ForEach(t => t.DOFade(0, animationTime));
+            _texts.ForEach(t => t.DOFade(defaultTextAlpha, animationTime));
+            
+            onHoverExit.Invoke();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!interactable) return;
+            
             _transform.DOScale(pressedScale, animationTime);
         }
 

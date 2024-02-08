@@ -46,21 +46,19 @@ namespace SunkCost.HH.Modules.GridSystem
             return grid.CellToWorld(cellCoords);
         }
         
-        public List<Vector3Int> GetCellCoordsInBounds(List<Bounds> bounds)
+        public List<Vector3Int> GetCellCoordsInBounds(Bounds bounds)
         {
             var cellCoords = new List<Vector3Int>();
 
-            foreach (var bound in bounds)
-            {
-                var minCoords = WorldToCellCoords(bound.min);
-                var maxCoords = WorldToCellCoords(bound.max);
+            var cellSize = grid.cellSize;
+            var minCoords = WorldToCellCoords(bounds.min + new Vector3(cellSize.x, 0, cellSize.z) / 2);
+            var maxCoords = WorldToCellCoords(bounds.max - new Vector3(cellSize.x, 0, cellSize.z) / 2);
 
-                for (var x = minCoords.x + 1; x <= maxCoords.x; x++)
+            for (var x = minCoords.x; x <= maxCoords.x; x++)
+            {
+                for (var z = minCoords.z; z <= maxCoords.z; z++)
                 {
-                    for (var z = minCoords.z + 1; z <= maxCoords.z; z++)
-                    {
-                        cellCoords.Add(new Vector3Int(x, 0, z));
-                    }
+                    cellCoords.Add(new Vector3Int(x, 0, z));
                 }
             }
 

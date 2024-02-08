@@ -2,7 +2,6 @@
 using System.Linq;
 using SunkCost.HH.Modules.ConstructionSystem;
 using SunkCost.HH.Modules.GridSystem;
-using SunkCost.HH.Modules.UiSystem;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,7 +19,22 @@ namespace SunkCost.HH.Modules.RoomSystem
         
         [SerializeField] private RoomTile roomTilePrefab;
         [SerializeField] private Transform roomTilesContainer;
+        
+        private void OnDrawGizmos()
+        {
+            foreach (var (key, (gridTile, roomTile)) in Tiles)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(gridTile.WorldPosition, Vector3.one * 0.8f);
 
+                if (roomTile.room == this)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(gridTile.WorldPosition, gridTile.WorldPosition + Vector3.up);
+                }
+            }
+        }
+        
         public void StartEditing()
         {
             if (!ConstructionManager.instance.StartConstruction(Tiles.Values.Select(kvp => kvp.Item1).ToList()))

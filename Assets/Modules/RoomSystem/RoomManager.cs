@@ -31,7 +31,7 @@ namespace SunkCost.HH.Modules.RoomSystem
                 _ => startRoomCreationButton.gameObject.SetActive(true)
             );
         }
-
+        
         public bool TryWorldPointToRoom(Vector3 point, out Room room)
         {
             if (!gridTileHandler.TryWorldToTile(point, out var gridTile))

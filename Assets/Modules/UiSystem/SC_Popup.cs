@@ -1,27 +1,30 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using UnityEngine;
 
 namespace SunkCost.HH.Modules.UiSystem
 {
     public class SC_Popup : MonoBehaviour
     {
-        private Transform _transform;
-        private Image _image;
+        [SerializeField] private float animationTime = 0.1f;
+        
+        private CanvasGroup _canvasGroup;
 
         private void Awake()
         {
-            _transform = transform;
-            _image = GetComponent<Image>();
-        }
-        
-        public void Show()
-        {
-            
+            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void Hide()
+        public async void ShowAsync()
         {
-            
+            gameObject.SetActive(true);
+            await _canvasGroup.DOFade(1, animationTime);
+        }
+
+        public async void HideAsync()
+        {
+            await _canvasGroup.DOFade(0, animationTime);
+            gameObject.SetActive(false);
         }
     }
 }
