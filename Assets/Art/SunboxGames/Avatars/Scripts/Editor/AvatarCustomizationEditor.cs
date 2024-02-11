@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 using System.Linq;
+using SunkCost.HH.Art.SunboxGames.Avatars.Scripts;
 
 #if UNITY_EDITOR
 using UnityEditor;

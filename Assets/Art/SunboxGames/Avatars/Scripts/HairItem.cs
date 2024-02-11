@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
     
     [CreateAssetMenu(fileName = "HairItem", menuName = "Sunbox Games/Avatars/Create Hair Item", order = 1)]
     public class HairItem : HairItemBase {

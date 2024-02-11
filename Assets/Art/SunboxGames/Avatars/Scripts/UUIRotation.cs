@@ -1,8 +1,7 @@
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
     public class UUIRotation : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
         
         public GameObject Avatar;

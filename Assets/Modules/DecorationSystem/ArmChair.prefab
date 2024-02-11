@@ -46,7 +46,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640fd83e249041c0abd41c3ab7a46d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onHeld:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlaced:
+    m_PersistentCalls:
+      m_Calls: []
   onClicked:
+    m_PersistentCalls:
+      m_Calls: []
+  onMoved:
+    m_PersistentCalls:
+      m_Calls: []
+  onRotated:
     m_PersistentCalls:
       m_Calls: []
   decorationIndicator: {fileID: 7416736594167263534}
@@ -99,7 +111,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6247563552184700931}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

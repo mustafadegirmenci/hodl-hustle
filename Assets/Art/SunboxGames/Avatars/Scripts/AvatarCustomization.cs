@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using UnityEditor;
 using System.Text;
+using UnityEditor;
+using UnityEngine;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
 
     public class AvatarCustomization : MonoBehaviour {
 
@@ -116,40 +116,40 @@ namespace Sunbox.Avatars {
 
         public AvatarReferences AvatarReferences;
 
-        [AvatarGenderFieldAttribute("Gender", "gender")]
+        [AvatarGenderField("Gender", "gender")]
         public AvatarGender CurrentGender = AvatarGender.Male;
         
-        [AvatarFloatFieldAttribute("Body Fat", "bodyFat", -100, 100, Section = SECTION_BODY_PARAMETERS)]
+        [AvatarFloatField("Body Fat", "bodyFat", -100, 100, Section = SECTION_BODY_PARAMETERS)]
         public float BodyFat = 0f;
 
-        [AvatarFloatFieldAttribute("Body Muscle", "bodyMuscle", 0, 100, Section = SECTION_BODY_PARAMETERS)] 
+        [AvatarFloatField("Body Muscle", "bodyMuscle", 0, 100, Section = SECTION_BODY_PARAMETERS)] 
         public float BodyMuscle = 0f;
 
-        [AvatarFloatFieldAttribute("Body Height (m)", "bodyHeightMetres", 1.5f, 2.1f, 1.5f, 2.1f, IgnoreInPlayMode = true)] 
+        [AvatarFloatField("Body Height (m)", "bodyHeightMetres", 1.5f, 2.1f, 1.5f, 2.1f, IgnoreInPlayMode = true)] 
         public float BodyHeight = 1.8f;
         
-        [AvatarFloatFieldAttribute("Breast Size (Female only)", "breastSize", -100, 100, Section = SECTION_BODY_PARAMETERS)]
+        [AvatarFloatField("Breast Size (Female only)", "breastSize", -100, 100, Section = SECTION_BODY_PARAMETERS)]
         public float BreastSize = 0f;
         
-        [AvatarFloatFieldAttribute("Nose Length", "noseLength", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Nose Length", "noseLength", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float NoseLength = 0f;
 
-        [AvatarFloatFieldAttribute("Lips Width", "lipsWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Lips Width", "lipsWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float LipsWidth = 0f;
 
-        [AvatarFloatFieldAttribute("Jaw Width", "jawWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Jaw Width", "jawWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float JawWidth = 0f;
 
-        [AvatarFloatFieldAttribute("Brow Width", "browWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Brow Width", "browWidth", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float BrowWidth = 0f;
 
-        [AvatarFloatFieldAttribute("Brow Height", "browHeight", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Brow Height", "browHeight", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float BrowHeight = 0f;
 
-        [AvatarFloatFieldAttribute("Eyes Size", "eyesSize", -100, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Eyes Size", "eyesSize", -100, 100, Section = SECTION_FACE_PARAMETERS)]
         public float EyesSize = 0f;
         
-        [AvatarFloatFieldAttribute("Eyes Closed Default", "eyesClosedDefault", 0, 100, Section = SECTION_FACE_PARAMETERS)]
+        [AvatarFloatField("Eyes Closed Default", "eyesClosedDefault", 0, 100, Section = SECTION_FACE_PARAMETERS)]
         public float EyesClosedDefault = 0f;
 
         [AvatarIntegerField("Skin Material", "skinMaterialIndex", Section = SECTION_FEATURE_STYLES, ArrayDependancyField = "MaleSkinMaterials")]

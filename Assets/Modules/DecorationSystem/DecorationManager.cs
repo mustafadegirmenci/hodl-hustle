@@ -38,7 +38,6 @@ namespace SunkCost.HH.Modules.DecorationSystem
 
         private void Start()
         {
-            InputManager.instance.onMouseUp.AddListener(PlaceItem);
             InputManager.instance.onRotateItem.AddListener(RotateHeldItem);
         }
 
@@ -85,22 +84,26 @@ namespace SunkCost.HH.Modules.DecorationSystem
 
             currentDecorationItem = item;
             decorationGridIndicationHandler.onIndicatedTileChanged.AddListener(MoveItemWithIndicator);
+            InputManager.instance.onMouseUp.AddListener(PlaceItem);
         }
         
         private void PlaceItem()
         {
             if (currentDecorationItem == null)
             {
+                Debug.Log("currentDecorationItem == null");
                 return;
             }
             
             if (!decorationValidationHandler.CanBePlaced)
             {
+                Debug.Log("!decorationValidationHandler.CanBePlaced");
                 return;
             }
 
             if (!currentDecorationItem.Place())
             {
+                Debug.Log("!currentDecorationItem.Place()");
                 return;
             }
             
@@ -117,8 +120,10 @@ namespace SunkCost.HH.Modules.DecorationSystem
                 
                 PlacedDecorationItems.Add(occupiedDecorationTile.Coordinates, currentDecorationItem);
             }
+            Debug.Log("Placed");
             currentDecorationItem = null;
             decorationGridIndicationHandler.onIndicatedTileChanged.RemoveListener(MoveItemWithIndicator);
+            InputManager.instance.onMouseUp.RemoveListener(PlaceItem);
         }
         
         private void MoveItemWithIndicator(GridTile indicator)

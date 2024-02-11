@@ -17,7 +17,7 @@ namespace SunkCost.HH.Modules.PhotographySystem
                     PhotoDirection.Front | PhotoDirection.Left,
                     250,
                     250,
-                    offset: Vector3.up * 0.5f
+                    cameraOffset: Vector3.up * 0.5f
                 );
 
                 testImage.texture = photo;

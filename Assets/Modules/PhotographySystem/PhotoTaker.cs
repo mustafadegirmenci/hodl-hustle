@@ -15,7 +15,9 @@ namespace SunkCost.HH.Modules.PhotographySystem
             float width = 500,
             float height = 500,
             float distance = -1,
-            Vector3 offset = default)
+            Vector3 cameraOffset = default,
+            Vector3 lookAtOffset = default
+            )
         {
             var renderTexture = PrepareRenderTexture(width, height);
             var subjectInstance = InstantiateSubject(subject);
@@ -24,7 +26,7 @@ namespace SunkCost.HH.Modules.PhotographySystem
             
             var bounds = CalculateBounds(subjectInstance);
             
-            SetCameraPositionAndRotation(bounds, from, distance, offset);
+            SetCameraPositionAndRotation(bounds, from, distance, cameraOffset, lookAtOffset);
             
             var photoRenderTexture = CapturePhoto(renderTexture);
             
@@ -42,7 +44,10 @@ namespace SunkCost.HH.Modules.PhotographySystem
 
         private GameObject InstantiateSubject(GameObject subjectPrefab)
         {
-            return Instantiate(subjectPrefab, Vector3.zero, Quaternion.identity);
+            var subjectInstance = Instantiate(subjectPrefab, Vector3.zero, Quaternion.identity);
+            subjectInstance.SetActive(true);
+            
+            return subjectInstance;
         }
 
         private void SetSubjectLayers(GameObject subjectInstance)
@@ -51,12 +56,17 @@ namespace SunkCost.HH.Modules.PhotographySystem
             foreach (var child in children) child.gameObject.layer = LayerMask.NameToLayer(photographySubjectLayerName);
         }
 
-        private void SetCameraPositionAndRotation(Bounds bounds, PhotoDirection from, float distance, Vector3 offset)
+        private void SetCameraPositionAndRotation(
+            Bounds bounds, 
+            PhotoDirection from, 
+            float distance, 
+            Vector3 offset,
+            Vector3 lookAtOffset)
         {
             var calculatedDistance = (distance < 0) ? Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z) * 1.5f : distance;
 
             photographyCamera.transform.position = CalculateCameraPosition(bounds, from, calculatedDistance, offset);
-            photographyCamera.transform.LookAt(bounds.center);
+            photographyCamera.transform.LookAt(bounds.center + lookAtOffset);
         }
 
         private Vector3 CalculateCameraPosition(Bounds bounds, PhotoDirection from, float distance, Vector3 offset)

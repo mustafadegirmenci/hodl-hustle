@@ -18,3 +18,8 @@ MonoBehaviour:
     image: {fileID: 21300000, guid: 551a4a3af30693c42b946b67199d4e39, type: 3}
     prefab: {fileID: 4291146946360679605, guid: adbab0a7f4fdc4148821eb059cab6536,
       type: 3}
+  - name: ARMCHAIR II
+    price: 899
+    image: {fileID: 21300000, guid: 551a4a3af30693c42b946b67199d4e39, type: 3}
+    prefab: {fileID: 4291146946360679605, guid: adbab0a7f4fdc4148821eb059cab6536,
+      type: 3}

@@ -37,7 +37,7 @@ namespace SunkCost.HH.Modules.DecorationSystem
 
         public bool Place()
         {
-            if (CurrentState is not DecorationItemState.ToBePlaced or DecorationItemState.Replacing)
+            if (CurrentState != DecorationItemState.ToBePlaced && CurrentState != DecorationItemState.Replacing)
             {
                 return false;
             }

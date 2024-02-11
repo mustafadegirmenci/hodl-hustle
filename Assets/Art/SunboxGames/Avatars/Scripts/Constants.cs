@@ -1,5 +1,5 @@
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
     
     public static class Constants {
 

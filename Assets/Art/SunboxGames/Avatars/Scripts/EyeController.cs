@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
     public class EyeController : MonoBehaviour {
 
         public Transform GazeTarget;

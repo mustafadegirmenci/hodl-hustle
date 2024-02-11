@@ -10,7 +10,6 @@ namespace SunkCost.HH.Modules.WallSystem
     {
         [SerializeField] private Grid wallGrid;
         [SerializeField] private RoomManager roomManager;
-        
         [SerializeField] private GridTileHandler gridTileHandler;
 
         private void Start()

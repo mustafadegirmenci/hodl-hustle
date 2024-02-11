@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
 
     /// <summary>
     /// Instantiated facial item behaviour

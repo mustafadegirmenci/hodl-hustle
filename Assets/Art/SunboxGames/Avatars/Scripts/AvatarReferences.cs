@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
 
     [CreateAssetMenu(fileName = "AvatarReferences", menuName = "Sunbox Games/Avatars/Create Avatar References", order = 0)]
     public class AvatarReferences : ScriptableObject {

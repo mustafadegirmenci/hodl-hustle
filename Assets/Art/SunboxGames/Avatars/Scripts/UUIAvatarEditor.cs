@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Linq;
-using System;
 using UnityEngine.Events;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
-namespace Sunbox.Avatars {
+namespace SunkCost.HH.Art.SunboxGames.Avatars.Scripts {
 
     public class UUIAvatarEditor : MonoBehaviour {
 

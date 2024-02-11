@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using SunkCost.HH.Modules.GridSystem;
 using SunkCost.HH.Modules.RoomSystem;
 using UnityEngine;
@@ -82,7 +81,6 @@ namespace SunkCost.HH.Modules.DecorationSystem
                 if (!roomManager.TryWorldPointToRoom(worldPoint, out var room))
                 {
                     CanBePlaced = false;
-                    Debug.Log("Not in a room");
                     return;
                 }
 

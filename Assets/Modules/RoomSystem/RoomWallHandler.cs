@@ -9,8 +9,8 @@ namespace SunkCost.HH.Modules.RoomSystem
     {
         public readonly List<GameObject> WallObjects = new();
         public readonly Dictionary<WallCode, GameObject> WallPrefabs = new();
-        [SerializeField] private Transform wallsContainer;
         
+        [SerializeField] private Transform wallsContainer;
         [SerializeField] private GameObject farLeftInnerPrefab;
         [SerializeField] private GameObject farLeftOuterPrefab;
         [SerializeField] private GameObject farNearLeftBiasedPrefab;
