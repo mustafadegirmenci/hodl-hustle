@@ -13,14 +13,14 @@ namespace SunkCost.HH.Modules.EmployeeSystem
 
         private void Start()
         {
-            InvokeRepeating(nameof(CreateRandomEmployee), 0f, 5f);
+            InvokeRepeating(nameof(CreateRandomEmployee), 2, Random.Range(5, 7));
         }
 
         private void CreateRandomEmployee()
         {
             var customizationData = CharacterManager.instance.CreateRandomCustomizationData();
 
-            var employeeData = new EmployeeData(customizationData);
+            var employeeData = new EmployeeData(customizationData, Random.Range(10, 90));
 
             employeeRegistry.entries.Add(employeeData);
             onEmployeeCreated.Invoke(employeeData);
